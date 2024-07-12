@@ -89,7 +89,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-        String discordId = Objects.requireNonNull(event.getMember()).getId();
+        String discordId = event.getUser().getId(); 
         Document user = DatabaseManager.getUser(discordId);
         if (user != null) {
             String inviterId = user.getString("invitedBy");
