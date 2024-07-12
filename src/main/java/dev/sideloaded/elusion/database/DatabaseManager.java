@@ -87,6 +87,13 @@ public static void decrementField(String discordID, String field) {
     );
 }
 
+    public static void decrementField(String discordID, String field, int amount) {
+        usersCollection.updateOne(
+                new Document("discordID", discordID),
+                new Document("$inc", new Document(field, -amount))
+        );
+    }
+
 public static void addCredit(String discordID) {
     incrementField(discordID, "credits");
     incrementField(discordID, "invites");

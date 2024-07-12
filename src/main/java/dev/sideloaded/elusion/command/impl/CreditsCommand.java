@@ -15,6 +15,11 @@ public class CreditsCommand implements SlashCommand {
     }
 
     @Override
+    public boolean isAuthorized(String userId) {
+        return true;
+    }
+
+    @Override
     public CommandData getCommandData() {
         return Commands.slash("credits", "Check your credit balance");
     }

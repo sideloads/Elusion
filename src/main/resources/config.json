@@ -1,0 +1,7 @@
+{
+  "token": "TOKEN_HERE",
+  "guildId": 1260571476927447241,
+  "mongoConnectionString": "mongodb://localhost:27017",
+  "authorizedUsers": ["309681798957498368"],
+  "allowedChannels": [1260571476927447246]
+}

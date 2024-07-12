@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class GenerateCommand implements SlashCommand {
-    private static final String MAIN_FOLDER = "C:\\Full\\Path\\To\\Your\\Main\\Folder";
+    private static final String MAIN_FOLDER = "C:\\Users\\sideload\\Downloads\\altie";
     private static final String BANNED_FOLDER = MAIN_FOLDER + "/banned";
     private static final String UNBANNED_FOLDER = MAIN_FOLDER + "/unbanned";
     private static final String USED_FOLDER = MAIN_FOLDER + "/used";
@@ -43,6 +43,11 @@ public class GenerateCommand implements SlashCommand {
                                 .addChoice("Unbanned Alt", "unbanned")
                                 .addChoice("Banned Alt", "banned")
                 );
+    }
+
+    @Override
+    public boolean isAuthorized(String userId) {
+        return true;
     }
 
     @Override
@@ -75,7 +80,14 @@ public class GenerateCommand implements SlashCommand {
                 event.getHook().sendMessage("You don't have enough credits to generate a banned alt. You need 1 credit, but you have " + credits + " credits.").queue();
             }
         } else if ("unbanned".equals(type)) {
-            event.getHook().sendMessage("You do not have permission to generate unbanned alts.").queue();
+            if (credits >= 10) {
+                if (generateAlt(event, type)) {
+                    DatabaseManager.decrementField(userId, "credits", 10);
+                    event.getHook().sendMessage("You have used 10 credits to generate an unbanned alt.").queue();
+                }
+            } else {
+                event.getHook().sendMessage("You need at least 10 credits to generate an unbanned alt. You currently have " + credits + " credits.").queue();
+            }
         } else {
             event.getHook().sendMessage("Invalid alt type specified.").queue();
         }
@@ -149,19 +161,14 @@ public class GenerateCommand implements SlashCommand {
             Random random = new Random();
             File randomFile = files[random.nextInt(files.length)];
 
-            event.getUser().openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Here's your " + type + " alt!")
-                        .addFiles(FileUpload.fromData(randomFile))
-                        .queue(success -> {
-                            moveFile(randomFile, destinationFolder);
-                            DatabaseManager.incrementField(event.getUser().getId(), "altsGenerated");
-                            event.getHook().sendMessage("Check your direct messages for your " + type + " alt.").queue();
-                        }, failure -> {
-                            event.getHook().sendMessage("Failed to send the alt via DM. Please make sure you have DMs enabled for this server.").queue();
-                        });
-            }, failure -> {
-                event.getHook().sendMessage("Failed to open a private channel. Please make sure you have DMs enabled for this server.").queue();
-            });
+            event.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Here's your " + type + " alt!")
+                    .addFiles(FileUpload.fromData(randomFile))
+                    .queue(success -> {
+                        moveFile(randomFile, destinationFolder);
+                        DatabaseManager.incrementField(event.getUser().getId(), "altsGenerated");
+                        event.getHook().sendMessage("Check your direct messages for your " + type + " alt.").queue();
+                    }, failure -> event.getHook().sendMessage("Failed to send the alt via DM. Please make sure you have DMs enabled for this server.").queue()),
+                       failure -> event.getHook().sendMessage("Failed to open a private channel. Please make sure you have DMs enabled for this server.").queue());
 
             return true;
         } catch (Exception e) {

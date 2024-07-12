@@ -25,9 +25,16 @@ public class Main extends ListenerAdapter {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public static void main(String[] args) {
-        String token = "TOKEN_HERE";
-        long guildId = 000L;
-        String mongoConnectionString = "mongodb://localhost:27017";
+        Config config = Config.getInstance();
+        String token = config.getToken();
+        long guildId = config.getGuildId();
+        String mongoConnectionString = config.getMongoConnectionString();
+
+        
+        if (token == null || mongoConnectionString == null) {
+            throw new RuntimeException("Missing required configuration values: token or mongoConnectionString");
+        }
+
         DatabaseManager.connect(mongoConnectionString);
 
         JDA jda = JDABuilder.createDefault(token)

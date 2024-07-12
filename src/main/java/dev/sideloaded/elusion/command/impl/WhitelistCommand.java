@@ -1,5 +1,6 @@
 package dev.sideloaded.elusion.command.impl;
 
+import dev.sideloaded.elusion.Config;
 import dev.sideloaded.elusion.command.SlashCommand;
 import dev.sideloaded.elusion.database.DatabaseManager;
 import net.dv8tion.jda.api.entities.User;
@@ -17,11 +18,14 @@ import java.util.Objects;
 
 public class WhitelistCommand implements SlashCommand {
 
-    private static final List<String> AUTHORIZED_USERS = List.of("00000");
-
     @Override
     public String getName() {
         return "whitelist";
+    }
+
+    @Override
+    public boolean isAuthorized(String userId) {
+        return Config.getInstance().getAuthorizedUsers().contains(userId);
     }
 
     @Override
@@ -48,7 +52,7 @@ public class WhitelistCommand implements SlashCommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        if (!AUTHORIZED_USERS.contains(event.getUser().getId())) {
+        if (!isAuthorized(event.getUser().getId())) {
             event.reply("You are not authorized to use this command.").setEphemeral(true).queue();
             return;
         }
@@ -66,11 +70,11 @@ public class WhitelistCommand implements SlashCommand {
                 if (days != null) {
                     response += " for " + days + " days";
                 }
-                event.reply(response).queue();
+                event.reply(response).setEphemeral(true).queue();
                 break;
             case "remove":
                 DatabaseManager.updateUserWhitelist(targetUser.getId(), false, null, null);
-                event.reply("User " + targetUser.getAsTag() + " has been removed from the whitelist").queue();
+                event.reply("User " + targetUser.getAsTag() + " has been removed from the whitelist").setEphemeral(true).queue();
                 break;
             case "check":
                 Document user = DatabaseManager.getUser(targetUser.getId());
@@ -79,9 +83,9 @@ public class WhitelistCommand implements SlashCommand {
                 Instant expiration = user != null ? user.getDate("whitelistExpiration") != null ? user.getDate("whitelistExpiration").toInstant() : null : null;
                 if (isWhitelisted) {
                     String expirationString = expiration != null ? " until " + expiration : " permanently";
-                    event.reply("User " + targetUser.getAsTag() + " is whitelisted with type: " + whitelistType + expirationString).queue();
+                    event.reply("User " + targetUser.getAsTag() + " is whitelisted with type: " + whitelistType + expirationString).setEphemeral(true).queue();
                 } else {
-                    event.reply("User " + targetUser.getAsTag() + " is not whitelisted").queue();
+                    event.reply("User " + targetUser.getAsTag() + " is not whitelisted").setEphemeral(true).queue();
                 }
                 break;
             default:

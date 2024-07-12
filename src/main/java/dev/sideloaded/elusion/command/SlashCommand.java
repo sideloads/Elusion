@@ -9,4 +9,7 @@ public interface SlashCommand {
     CommandData getCommandData();
 
     void execute(SlashCommandInteractionEvent event);
+
+    boolean isAuthorized(String userId);
+
 }

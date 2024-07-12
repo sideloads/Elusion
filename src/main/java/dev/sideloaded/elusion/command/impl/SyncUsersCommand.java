@@ -1,5 +1,6 @@
 package dev.sideloaded.elusion.command.impl;
 
+import dev.sideloaded.elusion.Config;
 import dev.sideloaded.elusion.command.SlashCommand;
 import dev.sideloaded.elusion.database.DatabaseManager;
 import net.dv8tion.jda.api.entities.Guild;
@@ -10,7 +11,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class SyncUsersCommand implements SlashCommand {
 
-    private static final String AUTHORIZED_USER_ID = "000000";
 
     @Override
     public String getName() {
@@ -23,8 +23,13 @@ public class SyncUsersCommand implements SlashCommand {
     }
 
     @Override
+    public boolean isAuthorized(String userId) {
+        return Config.getInstance().getAuthorizedUsers().contains(userId);
+    }
+
+    @Override
     public void execute(SlashCommandInteractionEvent event) {
-        if (!event.getUser().getId().equals(AUTHORIZED_USER_ID)) {
+        if (!isAuthorized(event.getUser().getId())) {
             event.reply("You are not authorized to use this command.").setEphemeral(true).queue();
             return;
         }

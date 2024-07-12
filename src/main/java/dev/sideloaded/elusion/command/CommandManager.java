@@ -18,8 +18,8 @@ public class CommandManager extends ListenerAdapter {
         registerCommand(new SyncUsersCommand());
         registerCommand(new CreditsCommand());
         registerCommand(new WhitelistCommand());
-        allowedChannels.add(00000L);
-        // Add more channel IDs here
+        registerCommand(new StockCommand());
+        allowedChannels.add(1260571476927447246L);
     }
 
     private void registerCommand(SlashCommand command) {
@@ -40,14 +40,18 @@ public class CommandManager extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!allowedChannels.contains(event.getChannel().getIdLong())) {
             event.reply("This command cannot be used in this channel.").setEphemeral(true).queue();
-            // Also prevents the command from being used in DM's although JDA does not have this feature set.
             return;
         }
 
         String commandName = event.getName();
         SlashCommand command = commands.get(commandName);
         if (command != null) {
-            command.execute(event);
+            if (command.isAuthorized(event.getUser().getId())) {
+                command.execute(event);
+            } else {
+                event.reply("You are not authorized to use this command.").setEphemeral(true).queue();
+            }
         }
     }
+
 }

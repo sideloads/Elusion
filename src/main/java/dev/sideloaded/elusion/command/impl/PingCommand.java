@@ -12,6 +12,11 @@ public class PingCommand implements SlashCommand {
     }
 
     @Override
+    public boolean isAuthorized(String userId) {
+        return true;
+    }
+
+    @Override
     public CommandData getCommandData() {
         return Commands.slash("ping", "Check the bot's latency");
     }
