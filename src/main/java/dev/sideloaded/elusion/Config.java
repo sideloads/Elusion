@@ -30,6 +30,9 @@ public class Config {
     @SerializedName("allowedChannels")
     private List<Long> allowedChannels;
 
+    @SerializedName("mainFolderPath")
+private String mainFolderPath;
+
     private Config() {
     }
 
@@ -92,5 +95,9 @@ public class Config {
 
     public List<Long> getAllowedChannels() {
         return allowedChannels;
+    }
+
+    public String getMainFolderPath() {
+        return mainFolderPath;
     }
 }

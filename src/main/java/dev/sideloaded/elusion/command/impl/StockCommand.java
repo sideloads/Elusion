@@ -1,5 +1,6 @@
 package dev.sideloaded.elusion.command.impl;
 
+import dev.sideloaded.elusion.Config;
 import dev.sideloaded.elusion.command.SlashCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 public class StockCommand implements SlashCommand {
 
-    private static final String MAIN_FOLDER = "C:\\Users\\sideload\\Downloads\\altie";
+    private static final String MAIN_FOLDER = Config.getInstance().getMainFolderPath();
     private static final String BANNED_FOLDER = MAIN_FOLDER + "/banned";
     private static final String UNBANNED_FOLDER = MAIN_FOLDER + "/unbanned";
 

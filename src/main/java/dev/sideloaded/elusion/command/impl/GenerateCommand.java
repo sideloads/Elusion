@@ -1,5 +1,6 @@
 package dev.sideloaded.elusion.command.impl;
 
+import dev.sideloaded.elusion.Config;
 import dev.sideloaded.elusion.command.SlashCommand;
 import dev.sideloaded.elusion.database.DatabaseManager;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -20,7 +21,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class GenerateCommand implements SlashCommand {
-    private static final String MAIN_FOLDER = "C:\\Users\\sideload\\Downloads\\altie";
+    private static final String MAIN_FOLDER = Config.getInstance().getMainFolderPath();
     private static final String BANNED_FOLDER = MAIN_FOLDER + "/banned";
     private static final String UNBANNED_FOLDER = MAIN_FOLDER + "/unbanned";
     private static final String USED_FOLDER = MAIN_FOLDER + "/used";
